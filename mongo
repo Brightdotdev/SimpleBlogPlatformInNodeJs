@@ -1,0 +1,46 @@
+
+
+
+const readline = require('readline');
+
+// Mock database
+const database = [
+  { username: 'john', email: 'john.doe@example.com', age: 30 },
+  { username: 'jane', email: 'jane.doe@example.com', age: 25 }
+];
+
+// Function to validate user against the database
+function validateUserInDatabase(username) {
+  const user = database.find(user => user.username === username);
+  return user ? user : null;
+}
+
+// Function to read user input from the console
+function getUserInput() {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  return new Promise((resolve) => {
+    rl.question('Enter username: ', (username) => {
+      resolve(username);
+      rl.close();
+    });
+  });
+}
+
+// Main function to check user input against the database
+async function main() {
+  const username = await getUserInput();
+  const user = validateUserInDatabase(username);
+  if (user) {
+    console.log("User found in database:");
+    console.log(user);
+  } else {
+    console.log("User not found in database.");
+  }
+}
+
+// Call the main function
+main();
