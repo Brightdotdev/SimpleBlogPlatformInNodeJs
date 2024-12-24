@@ -63,8 +63,9 @@ const validName =(name)=>
 const validAge = (age) => 
 {
   const num = parseInt(age, 10);
- return !isNaN(num) && num > 0;
+  return !isNaN(num) && num > 0;
 }
+
 const validEmail = (email) =>
   {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
