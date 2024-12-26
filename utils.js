@@ -1,8 +1,46 @@
 const readline = require("readline");
 const mongoose = require("mongoose");
+const { faker } = require("@faker-js/faker")
 
 
-const getUserIinput =(question) =>{
+
+//initial codes fore error handling and error checking
+
+const validName =(name)=>
+  {
+      return name.trim().length > 2;
+  }
+const validAge = (age) => 
+{
+  const num = parseInt(age, 10);
+  return !isNaN(num) && num > 0;
+}
+
+const validEmail = (email) =>
+  {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email)
+  }
+const validBlog =(blogging) =>
+  {
+    if(blogging === 'both' || blogging === 'writer' || blogging === 'reader' ) 
+      {
+        return blogging
+      }
+  }
+
+const connect = async (client) =>{
+  try{
+  await client.connect();
+  console.log("Connected Succesfully");
+  }
+  catch(error){
+      console.log(`${error} caused it not to connect`);
+  }
+} 
+
+
+const getUserInput =(question) =>{
 
     const input = readline.createInterface({
         input : process.stdin,
@@ -18,6 +56,48 @@ const getUserIinput =(question) =>{
     })
 }
 
+//new helper functions
+
+
+
+
+const generateUsername = (fullName) => {
+  const nameSplits = fullName.split(" ")
+  return nameSplits[1] + "_" + Math.floor(Math.random() * 2001)
+} 
+
+
+const generateRandomUsers = (userData) =>  {
+  const randomNumber = Math.floor(Math.random() * 5)
+  const usersArray = []
+  for (let index = 0; index < randomNumber; index++) {
+      const userIndex = Math.floor(Math.random() * userData.length)
+      const user = userData[userIndex]._id
+      usersArray.push(user)
+  }
+  return usersArray
+}
+
+const generateComments = (userData) =>  {
+  const randomNumber = Math.floor(Math.random() * 5)
+  const usersArray = []
+  for (let index = 0; index < randomNumber; index++) {
+      const userIndex = Math.floor(Math.random() * userData.length)
+      const user = userData[userIndex]._id
+      const comment = faker.lorem.lines(1)
+      usersArray.push({commenter : user , comment})
+  }
+  return usersArray
+}
+
+
+
+
+const urlValidator = (platform) => ({
+    type: String,
+    match : [ new RegExp(`^(https?:\/\/)?(www\.)?${platform}\.com\/[A-Za-z0-9-._~%&?=+#]*$`) , `That's not a valid ${platform} url` ]
+})
+
 
 
 const  connectToDatabase = async () => {
@@ -31,38 +111,10 @@ const  connectToDatabase = async () => {
 }
 
 
-const validName =(name)=>
-    {
-        return name.trim().length > 2;
-    }
-  const validAge = (age) => 
-  {
-    const num = parseInt(age, 10);
-    return !isNaN(num) && num > 0;
+  module.exports = {
+    connect,getUserInput,
+    validAge,validBlog,validEmail,validName,
+    connectToDatabase,urlValidator,
+    generateUsername,generateComments,
+    generateRandomUsers
   }
-  
-  const validEmail = (email) =>
-    {
-      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return re.test(email)
-    }
-  const validBlog =(blogging) =>
-    {
-      if(blogging === 'both' || blogging === 'writer' || blogging === 'reader' ) 
-        {
-          return blogging
-        }
-    }
-
-const connect = async (client) =>{
-    try{
-    await client.connect();
-    console.log("Connected Succesfully");
-    }
-    catch(error){
-        console.log(`${error} caused it not to connect`);
-    }
-} 
-
-
-  module.exports = {connect,getUserIinput,validAge,validBlog,validEmail,validName,connectToDatabase}

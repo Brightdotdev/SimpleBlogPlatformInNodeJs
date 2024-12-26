@@ -1,14 +1,11 @@
 const mongoose = require("mongoose");
+const {urlValidator} = require("./utils")
 
-const urlValidator = (platform) => ({
-    type: String,
-    match : [ new RegExp(`^(https?:\/\/)?(www\.)?${platform}\.com\/[A-Za-z0-9-._~%&?=+#]*$`) , `That's not a valid ${platform} url` ]
-})
 
 const userSchema = mongoose.Schema({
     fullNname : {
         type : String,
-         required : [true, "Your name is needed for registration is required"],
+         required : [true, "Your name is needed for registration "],
      },
 
     email : {
@@ -59,8 +56,5 @@ const userSchema = mongoose.Schema({
         {type : mongoose.Types.ObjectId, ref : "Blogs" }
     ]
 })
-
-
-
 
 module.exports = mongoose.model("users", userSchema)

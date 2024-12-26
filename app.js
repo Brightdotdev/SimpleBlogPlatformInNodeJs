@@ -1,7 +1,8 @@
 
 const { faker, el } = require("@faker-js/faker")
 require("dotenv").config()
-const {connectToDatabase} = require("./utils")
+const {getUserInput,generateComments
+    ,generateRandomUsers,generateUsername} = require("./utils")
 const CreateClass = require("./create")
 const ReadClass = require("./read")
 const UpdateClass = require("./update")
@@ -9,10 +10,6 @@ const UpdateClass = require("./update")
 
 
 
-const generateUsername = (fullName) => {
-    const nameSplits = fullName.split(" ")
-    return nameSplits[1] + "_" + Math.floor(Math.random() * 2001)
-} 
 
 
 
@@ -50,28 +47,6 @@ async function insertUsers(){
 
 
 
-const generateRandomUsers = (userData) =>  {
-    const randomNumber = Math.floor(Math.random() * 5)
-    const usersArray = []
-    for (let index = 0; index < randomNumber; index++) {
-        const userIndex = Math.floor(Math.random() * userData.length)
-        const user = userData[userIndex]._id
-        usersArray.push(user)
-    }
-    return usersArray
-}
-
-const generateComments = (userData) =>  {
-    const randomNumber = Math.floor(Math.random() * 5)
-    const usersArray = []
-    for (let index = 0; index < randomNumber; index++) {
-        const userIndex = Math.floor(Math.random() * userData.length)
-        const user = userData[userIndex]._id
-        const comment = faker.lorem.lines(1)
-        usersArray.push({commenter : user , comment})
-    }
-    return usersArray
-}
 
 
 const generateBlogAndLinkWithUsers  = async (userData) =>{
@@ -122,4 +97,22 @@ async function generateBlogs() {
 
 
     
-    generateBlogs()
+    async function main() {
+        const choice = await getUserInput("Enter '1' to insert users, '2' to insert blogs, or '3' to exit: ");
+        if (choice === '1') {
+            await insertUsers();
+            await main();
+        } else if (choice === '2') {
+            await generateBlogs();
+            await main();
+        } else if (choice === '3') {
+            console.log("Exiting...");
+            process.exit(0);
+        } else {
+            console.log("Invalid choice");
+            await main()
+        }
+    }
+
+
+    main()
