@@ -30,8 +30,8 @@ A **CRUD blog platform** built entirely in the terminal using **Node.js**, **Mon
 
 1. Clone the repository:
 ```bash
-git clone <repo-url>
-cd <repo-folder>
+git clone https://github.com/Brightdotdev/SimpleBlogPlatformInNodeJs.git
+cd SimpleBlogPlatformInNodeJs
 ```
 
 2. Install dependencies:
