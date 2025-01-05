@@ -17,15 +17,6 @@ const blogSchema = mongoose.Schema({
             message :  "Blogs can only be pending or published"
         }  
     } ,
-    createdAt : {
-        type : Date,
-        immutable : true,
-        default : () => Date.now()
-    },
-    updatedAt : {
-        type : Date,
-        default : () => Date.now()
-    },
     author : { type : mongoose.Types.ObjectId, ref : "users", required : true },
     comments : [{ 
     commenter :{ type : mongoose.Types.ObjectId, ref : "users", required : true },
@@ -34,8 +25,7 @@ const blogSchema = mongoose.Schema({
 ],
     likes :[{ type : mongoose.Types.ObjectId, ref : "users", required : true }],
     blogTags :[{ type : String }],
-
-})
+},{timestamps : true})
 
 
 

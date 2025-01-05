@@ -1,6 +1,7 @@
 const readline = require("readline");
 const mongoose = require("mongoose");
-const { faker } = require("@faker-js/faker")
+const { faker } = require("@faker-js/faker");
+const { profile } = require("console");
 
 
 
@@ -29,15 +30,7 @@ const validBlog =(blogging) =>
       }
   }
 
-const connect = async (client) =>{
-  try{
-  await client.connect();
-  console.log("Connected Succesfully");
-  }
-  catch(error){
-      console.log(`${error} caused it not to connect`);
-  }
-} 
+
 
 
 const getUserInput =(question) =>{
@@ -110,9 +103,21 @@ const  connectToDatabase = async () => {
     }
 }
 
+const generateUserData = (profile) =>{
+  return{
+    username : profile.displayName,
+    fullname : profile.familyName + " " + profile.givenName,
+    providerId : profile.id,
+    provider : profile.provider,
+    isFromExternalAuthentication : true,
+    userImage : profile.photos[0].value,
+    email : profile.emails[0].value}}
 
+
+
+    
   module.exports = {
-    connect,getUserInput,
+  getUserInput,generateUserData,
     validAge,validBlog,validEmail,validName,
     connectToDatabase,urlValidator,
     generateUsername,generateComments,

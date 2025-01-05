@@ -1,25 +1,11 @@
-const userSchema = require("./UserSchema")
-const blogSchema = require("./BlogSchema")
-const {connectToDatabase} = require("./utils")
+const userSchema = require("../Mongoose/UserSchema")
+const blogSchema = require("../Mongoose/BlogSchema")
 
 class Read{
 
-    constructor(){
-        this.initializeDatabaseConnection()
-    }
-
-
-    async initializeDatabaseConnection() {
-        try{
-            await connectToDatabase();
-            console.log("Connected from the read class")
-        }catch(err){
-            console.log("Error connceting to database")
-            console.log(err.message)}}
-
     async getAllBlogs(){
         try{
-            await this.initializeDatabaseConnection()
+            
             const userData = await blogSchema.find({})
          return userData
         }catch(e){
@@ -28,7 +14,7 @@ class Read{
 
         async getOneBlog(data){
             try{
-                await this.initializeDatabaseConnection()
+                
                 const userData = await blogSchema.findOne(data)
                 return userData
             }catch(e){
@@ -39,7 +25,7 @@ class Read{
     async getAllUsers(){
 
         try{
-            await this.initializeDatabaseConnection()
+            
             const userData = await userSchema.find({})
             return userData
         }catch(e){
@@ -48,11 +34,16 @@ class Read{
 
         async getOneUser(id){
             try{
-                await this.initializeDatabaseConnection()
-                const userData = await userSchema.find({ _id : id })
-                return userData
-            }catch(e){
-                console.log(e.message)}} 
+                return  await userSchema.find({ _id : id })
+            }catch(e){console.log(e.message)}} 
+
+
+            async getUserByEmail(email){
+                try{
+                 return await userSchema.findOne({ email })
+                }catch(e){console.log(e.message)}} 
+    
+
 
 
        async findBLoggersByCategory(){

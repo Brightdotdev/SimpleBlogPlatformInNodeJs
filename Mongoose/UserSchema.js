@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
-const {urlValidator} = require("./utils")
+const {urlValidator} = require("../utils/utils")
 
 
 const userSchema = mongoose.Schema({
-    fullNname : {
+    fullname : {
         type : String,
          required : [true, "Your name is needed for registration "],
      },
@@ -15,7 +15,7 @@ const userSchema = mongoose.Schema({
         lowercase : true,
         match : [/^\S+@\S+\.\S+$/, "Please enter a valid email"]
     },
-    userName : {
+    username : {
         type : String,
          required : [true, "Your blog's username is required"],
          unique : true,
@@ -26,35 +26,41 @@ const userSchema = mongoose.Schema({
      },
      password : {
         type : String,
-        required : [true, "Your blog's username is required"],
+        required : [true, "Your blog's password is required"],
         min : [8, "Your password cant be less than eight letters"]
      },
      bloggingStyle : {
         type : String,
         required : [true, "Your bloging style is required"],
         enum :{ 
-            values : ["writer", "Reader", "Both"],
+            values : ["writer", "reader", "both"],
             message : '{VALUE} is not a valid blogging style'
-        },
-        required : true
+        }
      },
      socialLinks : {
         linkedIn : urlValidator("linkedin"),
         instagram : urlValidator("instagram"),
         facebook : urlValidator("facebook")
     },
-    createdAt : {
-        type : Date,
-        immutable : true,
-        default : () => Date.now()
-    },
-    updatedAt : {
-        type : Date,
-        default : () => Date.now()
-    },
     blogs : [
         {type : mongoose.Types.ObjectId, ref : "Blogs" }
-    ]
-})
+    ],
+    userImage :{
+        type : String
+    },
+    provider : {
+        type : String
+    },
+    providerId : {
+        type : String},
+    isNewUser : {
+        type : Boolean,
+         default : true
+    },
+    isFromExternalAuthentication : {
+        type : Boolean,
+         default : false
+    }
+},{timestamps : true})
 
 module.exports = mongoose.model("users", userSchema)

@@ -1,27 +1,13 @@
 
-const userSchema = require("./UserSchema")
-const blogSchema = require("./BlogSchema")
-const {connectToDatabase} = require("./utils")
+const userSchema = require("../Mongoose/UserSchema")
+const blogSchema = require("../Mongoose/BlogSchema")
 
 class Update{
-
-    constructor(){
-        this.initializeDatabaseConnection()
-    }
-
-    async initializeDatabaseConnection() {
-        try{
-            await connectToDatabase();
-            console.log("Connected from the update class")
-        }catch(err){
-            console.log("Error connceting to database")
-            console.log(err.message)}}
 
       
             async linkBlogToUser(blogData, userId){
            
             try {
-            await this.initializeDatabaseConnection();
             const blog = await blogSchema.findOne({blogTitle : blogData.blogTitle , author : blogData.author ,blogBody :blogData.blogBody})
             const user = await userSchema.findOne({ _id : userId})
             

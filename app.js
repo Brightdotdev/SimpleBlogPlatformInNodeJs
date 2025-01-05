@@ -1,17 +1,41 @@
-
+const express = require("express")
 const { faker, el } = require("@faker-js/faker")
+const {getUserInput,generateComments,generateRandomUsers,generateUsername, connectToDatabase} = require("./utils/utils")
+const CreateClass = require("./DatabaseControllers/create")
+const ReadClass = require("./DatabaseControllers/read")
+const UpdateClass = require("./DatabaseControllers/update")
+const userValidationRouter = require("./Routes/UserValidation")
+const passport = require("passport")
+const session = require("express-session")
+const cookieParser = require("cookie-parser")
+
 require("dotenv").config()
-const {getUserInput,generateComments
-    ,generateRandomUsers,generateUsername} = require("./utils")
-const CreateClass = require("./create")
-const ReadClass = require("./read")
-const UpdateClass = require("./update")
+
+
+const app = express()
+connectToDatabase()
+
+app.use(cookieParser("bomboclattttttt"))
+app.use(express.json())
+app.use(session({
+    secret : "bomboclatttttt",
+    saveUninitialized : false,
+    resave : false,
+    cookie : {
+        maxAge : 5 * 60 * 1000,
+
+    }}))
+
+
+app.use(passport.initialize())
+app.use(passport.session())
+
+
+app.use("/user/auth", userValidationRouter)
 
 
 
-
-
-
+const PORT = process.env.PORT
 
 async function insertUsers(){
     try{
@@ -43,9 +67,13 @@ async function insertUsers(){
 
 
 
+
   
 
 
+app.get("/" ,(req,res) =>{
+    res.send({Msg: "Welcome motherfucker"})
+})
 
 
 
@@ -115,4 +143,8 @@ async function generateBlogs() {
     }
 
 
-    main()
+
+
+    app.listen(PORT, () =>{
+        console.log(`We listen on port localhost:${PORT} not Davido`)
+    })
