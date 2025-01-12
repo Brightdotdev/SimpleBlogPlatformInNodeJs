@@ -1,17 +1,22 @@
 const {Router} = require("express")
 const { checkSchema, validationResult, matchedData } = require("express-validator")
-const { CreateUserValidationSchema } = require("../utils/validationSchema")
+const { CreateUserValidationSchema, PassportJsValidationSchema,isNewUser } = require("../utils/validationSchema")
 const CreateClass = require("../DatabaseControllers/create")
+const UpdateClass = require("../DatabaseControllers/update")
+const ReadClass = require("../DatabaseControllers/read")
+
 const passport = require("passport")
 const userValidationRouter = Router()
 require("../Strategies/GoogleStrategy")
 
 
+
+//local strategy
 userValidationRouter.get("/signUp/new", async (req,res) =>{
   try {
-      res.status(200).send("Yeah youre here")
-      console.log("Yeah youre here")}
-    
+      console.log("Yeah youre here")
+    return res.status(200).send("Yeah youre here")
+    }
      catch (error) {console.log(error)}})
 
 
@@ -19,78 +24,72 @@ userValidationRouter.get("/signUp/new", async (req,res) =>{
 userValidationRouter.post("/signUp/new", checkSchema(CreateUserValidationSchema) , async (req,res) =>{
     const CreateController = new CreateClass();  
     try {
-        console.log(req.body)
         const results = validationResult(req)
         if(!results.isEmpty())
         return res.status(401).send({message : results.array()}) 
         const data = matchedData(req)
-        const newUser = await CreateController.createOneUser(data)
-        return res.status(201).send({message : "User created succesfully", newUser})}
+        const newuser = await CreateController.createOneUser(data)
+        return res.status(201).send({message : "User created succesfully", newuser})}
         catch (error) {console.log(error)}})
 
+
+
+     
         
-userValidationRouter.get("/google/user" ,
-    passport.authenticate("google", {scope : ["profile", "email"]})
-    ,  (req,res) =>{
-     
-        if (!req.user) return res.status(400).send("At least you made it this far")
-        console.log("howwwww")
-        return  res.send(user)
-    
-})
+//google strategy
+  userValidationRouter.get("/google/user" , passport.authenticate("google", {scope : ["profile", "email"]}))
 
 
-userValidationRouter.get("/signUp/google/success" ,
-    passport.authenticate("google", {failureRedirect : "/signUp/google/failure"})
-    ,(req,res) =>{  
-        if (!req.user) return res.status(400).send("At least you made it this far")
-            const  {authInfo} = req 
-            console.log({authInfo : {msg : "Auth info", authInfo}, authInfo : {msg : "user", user : req.user}})
-          
-            res.cookie("userDataChunk", JSON.stringify(authInfo),{ signed : true , secure : false, path : "/user/auth"})
-            console.log(req.signedCookies.userDataChunk)
-            console.log("howwwww")
-          
-
-            return res.status(201)})
-
-
-/* userValidationRouter.get("/signUp/google/success", async (req,res) =>{
-        console.log("Thank God next levell boyyy")
-        return res.send("Yeah it worked").status(201)})*/
+//google's callback
+   userValidationRouter.get("/signUp/google/success" ,passport.authenticate("google", {failureRedirect : "/user/auth/signUp/google/failure", successRedirect : "/user/auth/googleUser/finalSetUp"}))
 
     
-userValidationRouter.post("/signUp/google/success", async (req,res) =>{
-     
+userValidationRouter.get("/googleUser/finalSetUp",isNewUser, async (req,res) =>{ 
+   
     
-    console.log("FInally sent the form huh")
-    const Create = require("../DatabaseControllers/create")
     
+    return res.send({msg :"It worked?",user : req.user})})
+
+
+ 
+userValidationRouter.get("/googleUser/finalSetUpp", async (req,res) =>{ 
+   
+    console.log(req.user)
+    
+    return res.send({msg :"It worked?",user : req.user})})   
+
+
+
+   userValidationRouter.put("/googleUser/finalSetUp",checkSchema(PassportJsValidationSchema) , async (req,res) =>{
+
     try {
-        const {body,signedCookies : {userDataChunk}} = req
-        const userData = userDataChunk ? JSON.parse(userDataChunk) : null
-        console.log({msg :"User data", userData})
-        console.log(req.signedCookies)
-        console.log(req.cookies)
+        const {user, userName} = req
+        const results = validationResult(req)
+        if(!results.isEmpty()) return res.status(400).send({message : results.array()}) 
+        
+        console.log(req.user)
+        console.log(userName)
+        console.log("Data?...", req.userDataFrmMiddleWare)
+        console.log("Is authenticated?",req.isAuthenticated())
 
-        console.log({msg :"Body", body})
+        const UpdateController = new UpdateClass()
+        const ReadController = new ReadClass()
 
-        if (!userData) return res.status(400).send("At least you made it this farrrrr")
-        const completeUserInfo = {...userData,...body}
-        console.log({msg: "Complete user info", completeUserInfo})
-          
-            const CreateController = new Create()  
-            const newUser = await CreateController.createOneUser(completeUserInfo)
-            return res.status(201).send("Yeah the user is in the database now")}
-    catch (error) {
-        console.log(error)
-        return res.send("omo at the end of everything?????").status(500)}})
-
-
-
+        console.log(user)
+        if(!user) return res.status(404).send("User not found")
+        
+        const data = matchedData(req)
+        await UpdateController.updateUserDataFromPassport(data,user)
+        const proof = ReadController.getOneUser(user)
+        res.status(201).send({msg : "user Updated ig?", proof})
+   
+    } catch (error) {console.log(error)}})
 
 userValidationRouter.get("/signUp/google/failure", (req,res) =>{
    console.log("How did you even get here")
     return res.send("Yeah yk you failed")
 })
+
+
+
 module.exports = userValidationRouter

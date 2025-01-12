@@ -34,7 +34,7 @@ class Read{
 
         async getOneUser(id){
             try{
-                return  await userSchema.find({ _id : id })
+                return await userSchema.find({ _id : id })
             }catch(e){console.log(e.message)}} 
 
 

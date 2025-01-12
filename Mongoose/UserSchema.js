@@ -26,16 +26,16 @@ const userSchema = mongoose.Schema({
      },
      password : {
         type : String,
-        required : [true, "Your blog's password is required"],
+      /*   required : [true, "Your blog's password is required"], */
         min : [8, "Your password cant be less than eight letters"]
      },
      bloggingStyle : {
         type : String,
-        required : [true, "Your bloging style is required"],
+    /*     required : [true, "Your bloging style is required"],*/
         enum :{ 
             values : ["writer", "reader", "both"],
             message : '{VALUE} is not a valid blogging style'
-        }
+        } 
      },
      socialLinks : {
         linkedIn : urlValidator("linkedin"),

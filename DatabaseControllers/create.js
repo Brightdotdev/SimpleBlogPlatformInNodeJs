@@ -8,9 +8,7 @@ class Create{
                 
                     try {    
                     const userData = new userSchema(user);
-                    console.log("Data accepted succcesfully")
-                  
-                    return await userData.save()
+                     return await userData.save()
                 } catch (error) {
                     console.log("Error creating user")
                     console.log(error.message)
@@ -19,14 +17,11 @@ class Create{
 
             async createBlog(blog) {
                 try {
-                    if(blog){
+                    if(!blog) 
+                    return console.log("No blog identified")
+
                     const blogData = new blogSchema(blog);
-                    await blogData.save()
-                    console.log("Blog data accepted succcesfully")
-                    }else{
-                        console.log("No blog identified")
-                        retun
-                    }
+                    return await blogData.save()
 
                 } catch (error) {
                     console.log("Error creating blog")

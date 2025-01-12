@@ -49,10 +49,24 @@ const getUserInput =(question) =>{
     })
 }
 
+
+
+
 //new helper functions
 
 
+const hashPassword = (password) =>{
 
+  const bcrypt = require("bcrypt")
+  const saltRounds = 10
+  const salt = bcrypt.genSaltSync(saltRounds)
+
+  return bcrypt.hashSync(password, salt) 
+}
+
+const comparePassword = (password, hashed) =>{
+    return bcrypt.compareSync(password, hashed) 
+ }
 
 const generateUsername = (fullName) => {
   const nameSplits = fullName.split(" ")
@@ -104,9 +118,13 @@ const  connectToDatabase = async () => {
 }
 
 const generateUserData = (profile) =>{
+  
+  const generatedUsername = profile.displayName.split(" ")
+
+  const username = generatedUsername[0] + "_" + generatedUsername[1]
   return{
-    username : profile.displayName,
-    fullname : profile.familyName + " " + profile.givenName,
+    username,
+    fullname : profile.name.familyName + " " + profile.name.givenName,
     providerId : profile.id,
     provider : profile.provider,
     isFromExternalAuthentication : true,
@@ -121,5 +139,6 @@ const generateUserData = (profile) =>{
     validAge,validBlog,validEmail,validName,
     connectToDatabase,urlValidator,
     generateUsername,generateComments,
-    generateRandomUsers
+    generateRandomUsers,
+    comparePassword,hashPassword
   }
