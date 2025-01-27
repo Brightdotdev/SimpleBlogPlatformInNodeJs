@@ -97,15 +97,10 @@ const generateComments = (userData) =>  {
   return usersArray
 }
 
-
-
-
 const urlValidator = (platform) => ({
     type: String,
     match : [ new RegExp(`^(https?:\/\/)?(www\.)?${platform}\.com\/[A-Za-z0-9-._~%&?=+#]*$`) , `That's not a valid ${platform} url` ]
 })
-
-
 
 const  connectToDatabase = async () => {
     try{
@@ -122,6 +117,8 @@ const generateUserData = (profile) =>{
   const generatedUsername = profile.displayName.split(" ")
 
   const username = generatedUsername[0] + "_" + generatedUsername[1]
+
+  
   return{
     username,
     fullname : profile.name.familyName + " " + profile.name.givenName,
@@ -132,7 +129,6 @@ const generateUserData = (profile) =>{
     email : profile.emails[0].value}}
 
 
-
     
   module.exports = {
   getUserInput,generateUserData,
@@ -140,5 +136,6 @@ const generateUserData = (profile) =>{
     connectToDatabase,urlValidator,
     generateUsername,generateComments,
     generateRandomUsers,
+
     comparePassword,hashPassword
   }

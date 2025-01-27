@@ -1,20 +1,23 @@
-const userSchema = require("../Mongoose/UserSchema")
-const blogSchema = require("../Mongoose/BlogSchema")
+const userSchema = require("../Models/UserSchema")
+const blogSchema = require("../Models/BlogSchema")
 
 class Create{
 
             async createOneUser(user) {
-                if(!user) return console.log("no user found")
-                
+                if(!user){
+                    throw new Error("No user provided");
+                }
+            
                     try {    
+                    const signedPassword = require("../utils/utils").hashPassword(user.password)
+                    user.password = signedPassword
                     const userData = new userSchema(user);
-                     return await userData.save()
+                    return await userData.save()
                 } catch (error) {
                     console.log("Error creating user")
-                    console.log(error.message)
-                }
-            }
+                    console.log(error.message)}}
 
+                    
             async createBlog(blog) {
                 try {
                     if(!blog) 

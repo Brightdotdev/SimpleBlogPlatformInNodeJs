@@ -50,29 +50,44 @@ const CreateUserValidationSchema = {
     bloggingStyle : {
         in : ["body"],
        isIn : {
-         options : [["writer", "Reader", "Both"]],
+         options : [["writer", "reader", "both"]],
         errorMessage : "You must be either a writer blogger or reader"
        },
        notEmpty :{
         errorMessage : "You must be either a writer blogger or reader bruh"}}}
 
-
         
-const isNewUser = async (req,res,next) =>{
+const LogInValidationSchema = {
+ 
+    email : {
+        in : ["body"],
+        trim : true,
+        toLowerCase : true,
+        isEmail : { bail: true,
+        errorMessage : "Please Enter a valid email adress"
+        },
+        notEmpty : {
+            errorMessage : "Email cannot be empty boss"}},
 
-    console.log("Yeah were in this function allright")
-    const {user} = req 
-    console.log({userFmrMiddlewr : user})
+    password : {
+        in : ["body"],
+        notEmpty : {
+            errorMessage : "Email cannot be empty boss"},
+        trim : true,
+        toLowerCase : true,
+        isString : true,
+    }}
 
 
-   if(!user[0].isNewUser)
-     return res.status(200).send(`Welcome ${user.fullname}`)
-
-   
-    req.userDataFrmMiddleWare = user
-    return next() }
-
-        const PassportJsValidationSchema = {       
+        const PassportJsValidationSchema = {  
+        
+            id : {
+                in : ["body"],
+                trim : true,
+                isString : true,
+                notEmpty : {
+                    errorMessage : "we need the id"
+                }},    
             password : {
                 in : ["body"],
                 trim : true,
@@ -90,7 +105,7 @@ const isNewUser = async (req,res,next) =>{
                notEmpty :{
                 errorMessage : "You must be either a writer blogger or reader bruh"}},
        
-            socialLinks :{
+           /*  socialLinks :{
                 in : ["body"],
                 exists : {
                     errorMessage : "the users social links is in an onbject formart"}},
@@ -107,9 +122,6 @@ const isNewUser = async (req,res,next) =>{
             "socialLinks.facebook" : {
                 custom : {
                     options : (value) =>  /^(https?:\/\/)?(www\.)?facebook\.com\/[A-Za-z0-9-._~%&?=+#]*$/.test(value),
-                    errorMessage : "That's not a valid facebook link"}}}
+                    errorMessage : "That's not a valid facebook link"}} */}
         
-
-
-
-    module.exports = { CreateUserValidationSchema,PassportJsValidationSchema,isNewUser }
+    module.exports = { CreateUserValidationSchema,PassportJsValidationSchema,LogInValidationSchema }

@@ -1,6 +1,6 @@
 
-const userSchema = require("../Mongoose/UserSchema")
-const blogSchema = require("../Mongoose/BlogSchema")
+const userSchema = require("../Models/UserSchema")
+const blogSchema = require("../Models/BlogSchema")
 const { use } = require("passport")
 
 class Update{
@@ -22,25 +22,27 @@ class Update{
             }} catch (error) {console.log(error)}}
 
 
-        async updateUserDataFromPassport(userData, userId){
+        async updateUserDataFromPassport(userData){
            
             try {
-            const user = await userSchema.findOne({ _id : userId})
-            const {bloggingStyle, password, socialLinks } = userData
+            if(!userData) throw new Error("No data to update")
             
-            if(!user) return console.log("No user to start with")
-            if(!userData) return console.log("No userData to start with")
-             
+            const {userId,bloggingStyle, password, socialLinks} = userData
             
-            if(password) {
+            const user = await userSchema.findOne({ providerId : userId})
+            if(!user) throw new Error("No user to start with")
+            
+
+            if(!password) throw new Error("No password to update")    
             const hashedPassword = require("../utils/utils").hashPassword(password)
-            user.password  = hashedPassword}
-
-
+            
+            user.password  = hashedPassword
             if(bloggingStyle) user.bloggingStyle  = bloggingStyle
             if(socialLinks) user.socialLinks  = socialLinks
+            user.isNewUser = false
+            
+            console.log("yeah this is your verification")
 
-             user.isNewUser = false
              await user.save()
        }catch (error){console.log(error)}}}
 

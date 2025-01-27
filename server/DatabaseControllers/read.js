@@ -1,5 +1,5 @@
-const userSchema = require("../Mongoose/UserSchema")
-const blogSchema = require("../Mongoose/BlogSchema")
+const userSchema = require("../Models/UserSchema")
+const blogSchema = require("../Models/BlogSchema")
 
 class Read{
 
@@ -34,7 +34,7 @@ class Read{
 
         async getOneUser(id){
             try{
-                return await userSchema.find({ _id : id })
+                return await userSchema.find({email: id })
             }catch(e){console.log(e.message)}} 
 
 
@@ -43,8 +43,25 @@ class Read{
                  return await userSchema.findOne({ email })
                 }catch(e){console.log(e.message)}} 
     
+        
+                async LogUserIn(data){
+                try{
+
+                 const {email, password} = data
+                 const user =  await userSchema.findOne({ email })
+                 
+                if(!user) throw new Error("User not found")
+                
+                const passwordMatches = require("../utils/utils").comparePassword(password, user.password)
+                
+                if(passwordMatches)  return user
+                
+               throw new Error("Password does not match")
+                }catch(e){console.log(e.message)}} 
 
 
+
+                
 
        async findBLoggersByCategory(){
         try {
