@@ -26,6 +26,19 @@ userValidationRouter.get("/googleUser/finalSetUp" , isNewUser , handleUserRedire
 userValidationRouter.post("/googleUser/finalSetUp" ,checkSchema(PassportJsValidationSchema) , GoogleFinalSetUp)
 
 
+
+userValidationRouter.get("/authenticator" , (req,res) =>{
+
+   const userExists = req.session.userId 
+   console.log("this function is functioning yes")
+   if(!userExists){ 
+      return res.status(401).send(false)
+   }
+   return res.status(200).send(true)
+})
+
+
+
 userValidationRouter.get("/signUp/auth/failure", (req,res) =>{
    console.log("How did you even get here")
     return  res.redirect(`${process.env.CLIENT_URL}/auth/fail`)})

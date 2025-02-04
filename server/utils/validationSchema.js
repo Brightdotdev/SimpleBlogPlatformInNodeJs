@@ -104,6 +104,17 @@ const LogInValidationSchema = {
                },
                notEmpty :{
                 errorMessage : "You must be either a writer blogger or reader bruh"}},
+
+                email : {
+                    in : ["body"],
+                    trim : true,
+                    toLowerCase : true,
+                    isEmail : { bail: true,
+                    errorMessage : "Please Enter a valid email adress"
+                    },
+                    notEmpty : {
+                        errorMessage : "Email cannot be empty boss"}},
+            
        
            /*  socialLinks :{
                 in : ["body"],

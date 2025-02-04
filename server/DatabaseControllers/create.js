@@ -18,6 +18,18 @@ class Create{
                     console.log(error.message)}}
 
                     
+                    async createGoogleUser(user) {
+                        if(!user){
+                            throw new Error("No user provided");
+                        }
+                            try {
+                            const userData = new userSchema(user);
+                            return await userData.save()
+                        } catch (error) {
+                            console.log("Error creating user")
+                            console.log(error.message)}}  
+                    
+
             async createBlog(blog) {
                 try {
                     if(!blog) 

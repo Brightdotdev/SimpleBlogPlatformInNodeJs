@@ -1,28 +1,24 @@
 import React from 'react'
-import { SingUserUp } from '../../Utils/Api'
+import { googleSignIn,handleSubmit } from '../../Utils/Utils'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+
+
+
+
 
 const SignUp = () => {
-    const navigate = useNavigate();
-    const googleSignIn = async (e) => window.location.href = import.meta.env.VITE_REDIRECT_URL
-
-    const handleSubmit = async (e) => {
-    e.preventDefault()
-    try{
-    const formData = new FormData(e.target)
-    const data = Object.fromEntries(formData.entries());
-    const response = await SingUserUp(data)
-    if(response.status === 201){
-     navigate("/Login")
-    }}catch(error){
-     console.error(error)}}
-
+  const navigate = useNavigate();
+  
+  
+  const handleUserInput = (e) =>{
+    handleSubmit(e, navigate)
+  }
+  
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
     <h1 className="text-2xl font-bold mb-4">Welcome</h1>
-    <form className="space-y-4" onSubmit={handleSubmit}>
+    <form className="space-y-4" onSubmit={handleUserInput}>
       
       
       <div>

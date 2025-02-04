@@ -1,67 +1,36 @@
 import React, { useEffect, useState } from 'react'
 import { useSearchParams,useNavigate } from 'react-router-dom'
-import { GoogleFinalSetUpApi } from '../../Utils/Api';
+import { finalGoogleSetUp } from '../../Utils/Utils';
 
 
 const GoogleUserFinalSetUp = () => {
-    const [userData, setUserData] = useState({})
-    const [searchParams] = useSearchParams();
-    const navigate = useNavigate()
-    const userProvider = searchParams.get("userProvider")
-    const email = searchParams.get("email")
+  
+  const [userData, setUserData] = useState({})
+  const navigate = useNavigate()
+  
+  
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get("email")
+  const userProvider = searchParams.get("userProvider")
 
-    useEffect(() => {
-        
-        if(userProvider && email){
-            console.log(userProvider, email)
-            setUserData({userProvider, email})
-        }
-        console.log(userData)
-            
-    }, [userProvider, email])    
-
-    
-    useEffect(() => {
-        
-        if(userProvider && email){
-            setUserData({userProvider, email})
-        }
-        console.log(userData)
-            
-    }, [userProvider, email])    
-
-    useEffect(() => {
-        if (userData.userProvider && userData.email) {
-          console.log("Updated userData:", userData);
-        }
-      }, [userData]);
-
-            const finalGoogleUserSetUp = async (e)  => {
-
-                e.preventDefault();
-                const formData = new FormData(e.target)
-                const data = Object.fromEntries(formData.entries());
-                console.log("formData ", data )
-                data.id = userData.userProvider;
-                console.log("formData ", data )
-                try{
-                 const response = await GoogleFinalSetUpApi(data)
-                console.log(response)
-                
-                if(response.status === 201){
-                        navigate("/Login")
-                    }}
-                catch(error){
-                    console.log(error)
-                }
-                
+  
+        useEffect(() => {
+            if(userProvider && email){
+                setUserData({userProvider, email})
             }
+            console.log("initial userData " ,  userData)
+                
+        }, [userProvider, email])
+
+       const googleSetUp = (e) => {
+        finalGoogleSetUp( e,userData,navigate)
+      }
 
 
     return (
     <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-4">Final Set UP  {userData.email? `for ${userData.email}` : "" }</h1>
-        <form className="space-y-4" onSubmit={finalGoogleUserSetUp}>
+        <h1 className="text-2xl font-bold mb-4">Final Set UP  {userData.email ? `for ${userData.email}` : "..." }</h1>
+        <form className="space-y-4" onSubmit={googleSetUp}>
         
     
           <div>

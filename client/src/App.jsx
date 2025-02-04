@@ -1,18 +1,16 @@
 import React from 'react'
-import {BrowserRouter} from 'react-router-dom'
-import { AuthRoutes, DashboardPage } from './Utils/RouteController'
+import {BrowserRouter, Route, Routes} from 'react-router-dom'
+import { AuthRoutes,UsersRoutes } from './Utils/RouteController'
 
 
 const App = () => {
-
-
-
-  
-
   return (
 
     <BrowserRouter>
-    {<AuthRoutes/>}
+    <Routes>
+      <Route path='/*'  element={<AuthRoutes/>} />
+      <Route path='/o/user/*'  element={<UsersRoutes/>} />
+    </Routes>
     </BrowserRouter>
   )
 }

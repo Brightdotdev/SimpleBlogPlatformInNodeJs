@@ -26,10 +26,10 @@ class Update{
            
             try {
             if(!userData) throw new Error("No data to update")
+            console.log("data from  the uppdate controller " ,   userData)
+            const {id,bloggingStyle, password, email} = userData
             
-            const {userId,bloggingStyle, password, socialLinks} = userData
-            
-            const user = await userSchema.findOne({ providerId : userId})
+            const user = await userSchema.findOne({ providerId : id, email})
             if(!user) throw new Error("No user to start with")
             
 
@@ -38,12 +38,10 @@ class Update{
             
             user.password  = hashedPassword
             if(bloggingStyle) user.bloggingStyle  = bloggingStyle
-            if(socialLinks) user.socialLinks  = socialLinks
             user.isNewUser = false
-            
-            console.log("yeah this is your verification")
 
-             await user.save()
+            console.log("yeah this is your verification")
+            return await user.save()
        }catch (error){console.log(error)}}}
 
 

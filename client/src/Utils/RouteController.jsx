@@ -1,13 +1,33 @@
 import React from 'react'
+
 import { Routes,Route } from 'react-router-dom'
+import { ProtectedUserRoutes } from './RouteProtectors'
+
 import HomePage from '../Pages/HomePage'
 import LogIn from '../Pages/AuthPages/LogIn'
 import SignUp from '../Pages/AuthPages/SignUp'
+
 import SignIn from '../Pages/AuthPages/SignIn'
 import GoogleUserFinalSetUp from '../Pages/AuthPages/GoogleUserFinalSetUp'
 import SomethingWentWrong from '../Pages/AuthPages/SomethingWentWrong'
 import Dashboard from '../Pages/Dashboard'
 
+
+
+
+const UsersRoutes = () =>{
+
+    return(
+        <Routes> 
+            <Route element={<ProtectedUserRoutes/>} />
+
+            <Route path="/dashboard" element={<Dashboard/>}/>
+
+        </Routes>
+    )
+
+
+}
 
 const AuthRoutes = () => {
     return (
@@ -22,18 +42,5 @@ const AuthRoutes = () => {
     )
 }
 
-const DashboardPage = () => {
-    return (
-        
-        <Routes>
-            <Route path="/dashboard" element={<Dashboard/>}/>
-        </Routes>
-    )
-}
 
-
-
-
-
-
-export {AuthRoutes, DashboardPage} 
+export {AuthRoutes, UsersRoutes} 

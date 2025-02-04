@@ -37,12 +37,20 @@ class Read{
                 return await userSchema.find({email: id })
             }catch(e){console.log(e.message)}} 
 
+    
 
             async getUserByEmail(email){
                 try{
                  return await userSchema.findOne({ email })
                 }catch(e){console.log(e.message)}} 
     
+                async getUserFromSession(email){
+                    try{
+                    const userData =  await userSchema.findOne({ email })
+                    userData.password = " "
+                    return userData;
+                    }catch(e){console.log(e.message)}} 
+
         
                 async LogUserIn(data){
                 try{

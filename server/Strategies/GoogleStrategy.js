@@ -6,23 +6,21 @@ const ReadClass = require("../DatabaseControllers/read")
 
 require("dotenv").config()
 
-const clientSecret = process.env.GOOGLE_CLIENT_SECRET
-const clientID = process.env.GOOGLE_CLIENT_ID
-
-
 passport.serializeUser((user,done) =>{
     console.log({Msg :"Were in the sterilizing phase"})
-    return done(null,user.id)})
+    return done(null,user.email)})
 
 
-passport.deserializeUser(async (id,done) =>{
+passport.deserializeUser(async (email,done) =>{
     console.log({Msg :"desterilizing now"})
 
     const ReadController = new ReadClass()  
 
     try {
-    const foundUser = await ReadController.getOneUser(id)
+    const foundUser = await ReadController.getUserByEmail(email)
+    console.log(email)
     if(!foundUser) throw new Error("User not found or created")
+    console.log(foundUser)
     return done(null, foundUser)
     } catch (error) {
     console.log(error)
@@ -30,20 +28,32 @@ passport.deserializeUser(async (id,done) =>{
 
 
 passport.use(new GoogleStrategy({
-    clientID , clientSecret, callbackURL : "http://localhost:3232/user/auth/signUp/google/success"
+    clientID :process.env.GOOGLE_CLIENT_ID,
+    clientSecret : process.env.GOOGLE_CLIENT_SECRET ,
+    callbackURL : process.env.SUCCESS_CALLBACK_URL
+
 },async (accessToken,refreshToken,profile,done) =>{
     
     const CreateController = new CreateClass()  
     const ReadController = new ReadClass()  
-    
-    try {
-        const userData =  require("../utils/utils").generateUserData(profile)
 
-        const existingUser = await ReadController.getUserByEmail(userData.email)
-        if(existingUser) return done(null,existingUser)
+    try {
         
-        const userProfile =  await CreateController.createOneUser(userData)
+        const userData =  require("../utils/utils").generateUserData(profile)
+        console.log(userData)
+        const existingUser = await ReadController.getUserByEmail(userData.email)
+        
+
+        if(existingUser) { 
+        console.log(existingUser) 
+        return done(null,existingUser)
+        }
+    
+        const userProfile =  await CreateController.createGoogleUser(userData)
+        console.log(userProfile) 
+        
         return done(null,userProfile)
-    } catch (error) {
-    console.log(error)
-    return done(error,null)}}))
+
+        } catch (error) {
+        console.log(error)
+        return done(error,null)}}))

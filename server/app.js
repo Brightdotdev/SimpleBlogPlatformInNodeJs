@@ -3,7 +3,7 @@ const { faker, el } = require("@faker-js/faker")
 const {connectToDatabase} = require("./utils/utils")
 const MongoStore = require("connect-mongo")
 const userValidationRouter = require("./Routes/UserValidation")
-const userPages = require("./Routes/UserPages")
+const userPages = require("./Routes/userPages")
 const passport = require("passport")
 const session = require("express-session")
 const cookieParser = require("cookie-parser")
@@ -32,7 +32,8 @@ app.use(session({
     },
     store: MongoStore.create({
         mongoUrl: process.env.MONGODB_URI,
-        collection: 'sessions'
+        collectionName: 'sessions',
+        ttl : 30 * 24 * 60 * 60 * 1000 
     })
 }))
 
@@ -44,12 +45,14 @@ app.use(passport.session())
 
 app.use("/user/auth", userValidationRouter)
 
-app.use("/user", userPages)
+app.use("/api/user", userPages)
 
 
 app.get("/" ,(req,res) =>{
     req.session.visited = true;
 
+
+    console.log(session)
     if(req.session.visited){
         console.log("You have visited this page")
     }
@@ -63,7 +66,16 @@ app.get("/" ,(req,res) =>{
     }
     
 
-    res.send({Msg:  "Welcome motherfucker"})
+    res.send(
+        `
+        <div>
+    ${console.log(session)}
+    </div>
+    <script>
+    ${console.log(session)}
+    </script>
+        `
+    )
 })
 
 

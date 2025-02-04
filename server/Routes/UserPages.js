@@ -4,11 +4,8 @@ const { handleDashBoard } = require('../utils/HandleUserPages')
 
 const userPages  = Router();
 
+
 userPages.get("/dashboard", isUserAuthenticated, handleDashBoard)
-
-
-
-
 
 
 
