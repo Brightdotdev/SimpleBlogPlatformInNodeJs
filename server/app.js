@@ -1,6 +1,7 @@
 const express = require("express")
 const { faker, el } = require("@faker-js/faker")
 const {connectToDatabase} = require("./utils/utils")
+const {errorMiddleware} = require("./utils/ErrorMiddleware")
 const MongoStore = require("connect-mongo")
 const userValidationRouter = require("./Routes/UserValidation")
 const userPages = require("./Routes/userPages")
@@ -43,39 +44,37 @@ app.use(passport.session())
 
 
 
-app.use("/user/auth", userValidationRouter)
+app.use("/v3/user/auth", userValidationRouter)
 
-app.use("/api/user", userPages)
+app.use("/v3/api/user", userPages)
 
+
+app.use(errorMiddleware)
 
 app.get("/" ,(req,res) =>{
     req.session.visited = true;
 
-
-    console.log(session)
-    if(req.session.visited){
-        console.log("You have visited this page")
-    }
-    if(req.session.id){
-        console.log("You have a session id")
-    }
-    console.log("Session id",  req.session.userId)
-
-    if(req.session.userId){
-        console.log("You have a session id")
-    }
     
 
-    res.send(
-        `
-        <div>
-    ${console.log(session)}
-    </div>
-    <script>
-    ${console.log(session)}
-    </script>
-        `
-    )
+    console.log("Current session:", req.session);
+  
+    
+    if (req.session.visited) {
+      console.log("You have visited this page");
+    }
+    if (req.session.id) {
+      console.log("You have a session id");
+    }
+    if (req.session.userId) {
+      console.log("Session userId:", req.session.userId);
+    }
+  
+    
+    res.send(`
+      <div>
+        <p>Check your console for session details.</p>
+      </div>
+    `);
 })
 
 

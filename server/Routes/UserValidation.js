@@ -1,10 +1,10 @@
 const {Router} = require("express")
-const { checkSchema, validationResult, matchedData } = require("express-validator")
+const { checkSchema} = require("express-validator")
 const { CreateUserValidationSchema, PassportJsValidationSchema, LogInValidationSchema } = require("../utils/validationSchema")
 require("../Strategies/GoogleStrategy")
-const { LocalSingUp, LocalLogIn, GoogleFinalSetUp,handleUserRedirect,isNewUser } = require("../utils/AuthenticationMiddleWares")
+const { LocalSingUp, LocalLogIn, GoogleFinalSetUp,handleUserRedirect,
+isNewUser, isUserAuthenticated } = require("../utils/AuthenticationMiddleWares")
 const passport = require("passport")
-
 
 const userValidationRouter = Router()
 
@@ -27,15 +27,7 @@ userValidationRouter.post("/googleUser/finalSetUp" ,checkSchema(PassportJsValida
 
 
 
-userValidationRouter.get("/authenticator" , (req,res) =>{
-
-   const userExists = req.session.userId 
-   console.log("this function is functioning yes")
-   if(!userExists){ 
-      return res.status(401).send(false)
-   }
-   return res.status(200).send(true)
-})
+userValidationRouter.get("/authenticator" ,isUserAuthenticated)
 
 
 

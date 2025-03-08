@@ -42,7 +42,10 @@ class Read{
             async getUserByEmail(email){
                 try{
                  return await userSchema.findOne({ email })
-                }catch(e){console.log(e.message)}} 
+                }catch(e){
+                console.log(e.message)
+                throw(e)
+            }} 
     
                 async getUserFromSession(email){
                     try{
@@ -54,18 +57,19 @@ class Read{
         
                 async LogUserIn(data){
                 try{
-
                  const {email, password} = data
                  const user =  await userSchema.findOne({ email })
                  
-                if(!user) throw new Error("User not found")
+                 if(!user) throw new Error("User not found")
                 
                 const passwordMatches = require("../utils/utils").comparePassword(password, user.password)
                 
                 if(passwordMatches)  return user
                 
                throw new Error("Password does not match")
-                }catch(e){console.log(e.message)}} 
+                }catch(e){
+                    throw e
+                }} 
 
 
 

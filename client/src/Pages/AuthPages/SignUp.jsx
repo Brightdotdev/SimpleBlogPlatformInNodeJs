@@ -16,7 +16,8 @@ const SignUp = () => {
   
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
+    <div className="bg-black/10 w-screen h-screen flex items-center justify-center">
+    <div className=" shadow-md rounded-lg p-6 w-full max-w-md">
     <h1 className="text-2xl font-bold mb-4">Welcome</h1>
     <form className="space-y-4" onSubmit={handleUserInput}>
       
@@ -101,6 +102,8 @@ const SignUp = () => {
     <div className="flex items-center justify-center">
         <button className='w-full cursor-pointer text-white bg-red-600 hover:bg-red-500 ' onClick={googleSignIn}> Continue with google</button>
     </div>
+  </div>
+
   </div>
   )
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Routes,Route } from 'react-router-dom'
+import { Routes,Route, createBrowserRouter } from 'react-router-dom'
 import { ProtectedUserRoutes } from './RouteProtectors'
 
 import HomePage from '../Pages/HomePage'
@@ -11,36 +11,45 @@ import SignIn from '../Pages/AuthPages/SignIn'
 import GoogleUserFinalSetUp from '../Pages/AuthPages/GoogleUserFinalSetUp'
 import SomethingWentWrong from '../Pages/AuthPages/SomethingWentWrong'
 import Dashboard from '../Pages/Dashboard'
+import { AppLoader } from './AppLoadders'
+import FourOhFour from '../Pages/FourOhFOur'
 
 
 
 
-const UsersRoutes = () =>{
 
-    return(
-        <Routes> 
-            <Route element={<ProtectedUserRoutes/>} />
-
-            <Route path="/dashboard" element={<Dashboard/>}/>
-
-        </Routes>
-    )
-
-
+ export const router = createBrowserRouter([
+    {
+        path : "/",
+        element : <HomePage/>,
+        loader : AppLoader,    
+        errorElement : <SomethingWentWrong/>
+    },
+    {
+        path : "/v3/auth",
+        errorElement : <SomethingWentWrong/>,
+        children :  [
+     
+       {path : "JoinUs",
+       element : <SignUp/>,
+       errorElement : <SomethingWentWrong/>},
+      
+       {path : "WelcomeBack",
+     element : <LogIn/>, 
+    errorElement : <SomethingWentWrong/>
 }
+]
+    },
 
-const AuthRoutes = () => {
-    return (
-        <Routes>
-            <Route path="/" element={<HomePage/>}/>
-            <Route path="/auth/fail" element={<SomethingWentWrong/>}/>
-            <Route path="/googleUser/finalSetUp" element={<GoogleUserFinalSetUp/>}/>
-            <Route path="/Login" element={<LogIn/>}/>
-            <Route path="/SignUp" element={<SignUp/>}/>
-            <Route path="/SignIn" element={<SignIn/>}/>
-        </Routes>
-    )
-}
+    {
+        path : "/error",
+        element : <SomethingWentWrong/>
+    },
+    
+    {
+        path : "*",
+        element : <FourOhFour/>
+    }
+])
 
 
-export {AuthRoutes, UsersRoutes} 

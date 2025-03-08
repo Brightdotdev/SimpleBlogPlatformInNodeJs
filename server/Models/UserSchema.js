@@ -49,7 +49,8 @@ const userSchema = mongoose.Schema({
         type : String
     },
     provider : {
-        type : String
+        type : String,
+        default : "localAuthentication"
     },
     providerId : {
         type : String},

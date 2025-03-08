@@ -8,7 +8,6 @@ const GoogleUserFinalSetUp = () => {
   const [userData, setUserData] = useState({})
   const navigate = useNavigate()
   
-  
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email")
   const userProvider = searchParams.get("userProvider")

@@ -12,18 +12,21 @@ passport.serializeUser((user,done) =>{
 
 
 passport.deserializeUser(async (email,done) =>{
-    console.log({Msg :"desterilizing now"})
 
+    console.log({Msg :"desterilizing now"})
     const ReadController = new ReadClass()  
 
     try {
     const foundUser = await ReadController.getUserByEmail(email)
     console.log(email)
+
     if(!foundUser) throw new Error("User not found or created")
     console.log(foundUser)
+
     return done(null, foundUser)
     } catch (error) {
     console.log(error)
+
     return done(error,null)}})
 
 
@@ -32,27 +35,16 @@ passport.use(new GoogleStrategy({
     clientSecret : process.env.GOOGLE_CLIENT_SECRET ,
     callbackURL : process.env.SUCCESS_CALLBACK_URL
 
-},async (accessToken,refreshToken,profile,done) =>{
-    
+},async (profile,done) =>{
     const CreateController = new CreateClass()  
-    const ReadController = new ReadClass()  
 
     try {
         
         const userData =  require("../utils/utils").generateUserData(profile)
         console.log(userData)
-        const existingUser = await ReadController.getUserByEmail(userData.email)
-        
 
-        if(existingUser) { 
-        console.log(existingUser) 
-        return done(null,existingUser)
-        }
-    
-        const userProfile =  await CreateController.createGoogleUser(userData)
-        console.log(userProfile) 
-        
-        return done(null,userProfile)
+        const userProfile =  await CreateController.createGoogleUser(userData,done)  
+        return userProfile
 
         } catch (error) {
         console.log(error)

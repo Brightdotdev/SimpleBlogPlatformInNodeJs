@@ -13,7 +13,7 @@ const Api = axios.create({
 export const AuthenticateUser =  async () => {
     try {
       console.log("we are her ooooo")
-      const response = await Api.get("/user/auth/authenticator");
+      const response = await Api.get("/v3/user/auth/authenticator");
       return response
     } catch (error) {
       console.error("Authentication error:", error);
@@ -22,11 +22,11 @@ export const AuthenticateUser =  async () => {
   };
 
 
-export const SingUserUp = (data) => Api.post("/user/auth/signup/new", data);
+export const SingUserUp = (data) => Api.post("/v3/user/auth/signup/new", data);
 
-export const GetUserDashBoard = () => Api.get("/api/user/dashboard");
+export const GetUserDashBoard = () => Api.get("/v3/api/user/dashboard");
 
 export  const LoginUserIn = (data) => Api.post("/login/user", data);
 
-export  const GoogleFinalSetUpApi = (data) => Api.post("/user/auth/googleUser/finalSetUp", data);
+export  const GoogleFinalSetUpApi = (data) => Api.post("/v3/user/auth/googleUser/finalSetUp", data);
 

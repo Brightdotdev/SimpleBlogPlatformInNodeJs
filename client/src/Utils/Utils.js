@@ -9,10 +9,27 @@ import { SingUserUp,GoogleFinalSetUpApi } from "./Api";
     const data = Object.fromEntries(formData.entries());
     const response = await SingUserUp(data)
     
-    if(response.status === 201){
-      navigate("/Login")
+    console.log({ data,response})
     
-    }}catch(error){ console.error(error)}}
+    if(response.status === 201){
+      console.log(response.data)
+      console.log(response)
+     return navigate("/Login")}
+  
+
+    if(response.status > 300){
+      console.log(response)
+      console.log(response.data)
+      console.log(response)
+      return navigate(`/error?errorMessage=${response.data}&status=${response.status}`)}
+
+
+  }
+    catch(error){ 
+      console.error(error)
+      navigate(`/error?errorMessage=${error}`)
+    
+    }}
 
 
 
