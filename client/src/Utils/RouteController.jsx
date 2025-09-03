@@ -1,18 +1,12 @@
 import React from 'react'
-
-import { Routes,Route, createBrowserRouter } from 'react-router-dom'
-import { ProtectedUserRoutes } from './RouteProtectors'
-
+import { createBrowserRouter } from 'react-router-dom'
 import HomePage from '../Pages/HomePage'
 import LogIn from '../Pages/AuthPages/LogIn'
 import SignUp from '../Pages/AuthPages/SignUp'
-
-import SignIn from '../Pages/AuthPages/SignIn'
 import GoogleUserFinalSetUp from '../Pages/AuthPages/GoogleUserFinalSetUp'
 import SomethingWentWrong from '../Pages/AuthPages/SomethingWentWrong'
-import Dashboard from '../Pages/Dashboard'
-import { AppLoader } from './AppLoadders'
 import FourOhFour from '../Pages/FourOhFOur'
+import { AppLoader } from './AppLoader'
 
 
 
@@ -37,15 +31,24 @@ import FourOhFour from '../Pages/FourOhFOur'
        {path : "WelcomeBack",
      element : <LogIn/>, 
     errorElement : <SomethingWentWrong/>
+},
+{path : "AlmostDone",
+    element : <GoogleUserFinalSetUp/>, 
+   errorElement : <SomethingWentWrong/>
 }
-]
-    },
+]},
 
     {
         path : "/error",
         element : <SomethingWentWrong/>
     },
     
+    {
+        path : "/v3/user/dashboard/:id",
+        element : <SomethingWentWrong/>
+    },
+
+
     {
         path : "*",
         element : <FourOhFour/>

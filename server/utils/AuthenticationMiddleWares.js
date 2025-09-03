@@ -1,7 +1,9 @@
+const { fa } = require('@faker-js/faker')
 const CreateClass = require('../DatabaseControllers/create')
 const ReadClass = require('../DatabaseControllers/read')
 const UpdateClass = require('../DatabaseControllers/update')
 const {validationResult,matchedData} = require('express-validator')
+const { debounceFunction } = require('./utils')
 
 
 const saveToSession = (req,data) =>{
@@ -120,7 +122,7 @@ const GoogleFinalSetUp  =  async (req,res,next) =>{
 
         if(!results.isEmpty()){
             console.log(results.array())
-            const validationError = new Error("Validation failed");
+            const validationError = new Error("Data Validation failed");
             validationError.statusCode = 401;
             throw validationError;}
             
@@ -130,15 +132,14 @@ const GoogleFinalSetUp  =  async (req,res,next) =>{
 
         if(!data){
             const nodDataFound = new Error("No data provided")
-            nodDataFound.statusCode = 404
+            nodDataFound.statusCode = 401
             throw nodDataFound}
 
-        
             await saveToSession(req,data)
 
             await UpdateController.updateUserDataFromPassport(data,next)
             return res.json({
-               redirect: `${process.env.CLIENT_URL}/o/user/dashboard`,
+               redirect: `${process.env.CLIENT_URL}/v3/user/dashboard`,
                verified: true,
                email: data.email});
 
@@ -147,21 +148,34 @@ const GoogleFinalSetUp  =  async (req,res,next) =>{
 
 const isUserAuthenticated =  (req,res) => {
        
-    if(req.session.userId) {
-        console.log(req.session.userId)
-        console.log(req.isAuthenticated())
 
-        return res.json({message : "Welcom you this validated boy",
-         reditect : `${process.env.CLIENT_URL}/Login`})
-        }
+    console.log( "from is authenticated", req.isAuthenticated())
+
+      if (!req.session.visited) {
+        req.session.visited = true;
+        return res.json({isNew : true,
+        isAuthenticated : false,
+        userId : null})
+      }
+
+
+    if(req.session.userId){
+        console.log( "the session id" , req.session.userId)
+        console.log(req.isAuthenticated(), "from is authenticated")
+        console.log( req.user.email)
+
+        return res.json({
+        isNew : false,
+        isAuthenticated : true,
+        userId : req.session.userId || req.user.email})}
         
-
-        return res.json({message : "Youre not authorized to view this page boss",
-         reditect : `${process.env.CLIENT_URL}/Login`
+        return res.json({
+        isNew : false,
+        isAuthenticated : false,
+        userId : null
         })}
 
 
 
 module.exports = {isNewUser,handleUserRedirect, 
-    LocalSingUp,LocalLogIn,GoogleFinalSetUp, saveToSession,
-    isUserAuthenticated}
+    LocalSingUp,LocalLogIn,GoogleFinalSetUp, saveToSession, isUserAuthenticated}

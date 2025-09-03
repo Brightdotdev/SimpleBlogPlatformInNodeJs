@@ -9,12 +9,35 @@ const passport = require("passport")
 const session = require("express-session")
 const cookieParser = require("cookie-parser")
 const cors = require("cors")
+const { default: rateLimit } = require("express-rate-limit")
+
+
+const customRateLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 5,
+  keyGenerator: (req) =>{
+    
+       if (req.session && req.session.userId) {
+        return req.session.userId; 
+    }
+    return req.ip;
+  },
+  handler: (req, res, next) => {
+      const error = new Error("You're sending too many requests! 🚨 aahhhh oga it's okay");
+      error.details = {
+        limitedBy: req.session?.userId ? "UserID" : "IP",
+        identifier: req.session?.userId || req.ip, 
+    };
+      error.status = 429;
+      next(error);
+  }
+});
 
 
 const app = express()
 require("dotenv").config()
 const PORT = process.env.PORT || 5000
-
+app.use(customRateLimiter)
 connectToDatabase();
 
 app.use(cors({credentials : true,  origin: process.env.CLIENT_URL}));
@@ -51,30 +74,21 @@ app.use("/v3/api/user", userPages)
 
 app.use(errorMiddleware)
 
-app.get("/" ,(req,res) =>{
-    req.session.visited = true;
+ app.get("/" ,(req,res) =>{
 
-    
+  if (req.session.id) {
+    console.log(req.session.id);
+    console.log("You have a session id");}
 
-    console.log("Current session:", req.session);
+    console.log("Session userId:", req.session.userId);
+    console.log("Session cookie:", req.session.cookie);
+  if (!req.session.visited) {
+  req.session.visited = true;
+  return res.send({isNew : true})
+  }
   
+   return res.send({isNew : false})
     
-    if (req.session.visited) {
-      console.log("You have visited this page");
-    }
-    if (req.session.id) {
-      console.log("You have a session id");
-    }
-    if (req.session.userId) {
-      console.log("Session userId:", req.session.userId);
-    }
-  
-    
-    res.send(`
-      <div>
-        <p>Check your console for session details.</p>
-      </div>
-    `);
 })
 
 

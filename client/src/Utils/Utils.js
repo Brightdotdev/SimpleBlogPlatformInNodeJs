@@ -1,4 +1,4 @@
-
+// Desc: Utils functions for the app
 import { SingUserUp,GoogleFinalSetUpApi } from "./Api";
 
  export const handleSubmit = async (e, navigate) => {
@@ -31,6 +31,7 @@ import { SingUserUp,GoogleFinalSetUpApi } from "./Api";
     
     }}
 
+    
 
 
 export const finalGoogleSetUp = async (e, userData,navigate)  => {
@@ -46,14 +47,34 @@ export const finalGoogleSetUp = async (e, userData,navigate)  => {
     try{
      const response = await GoogleFinalSetUpApi(data)
     console.log(response)
+
+    if(response.status === 201)
+    return navigate(`${response.data.redirect}?verified=${response.data.verified}&email=${response.data.email}`
+    ,{replace : true})
     
- 
-    window.location.href = `${response.data.redirect}?verified=${response.data.verified}&email=${response.data.email}`
 
-    if(response.status === 500){ return navigate("/Login") }}
+    if(response.status === 500){
+      console.log(response.data)
+      return navigate(`/error?errorMessage=${response.data}&status=${response.status}`)
+     }}
 
-    catch(error){console.log(error.response.data)}}
+    catch(error){
+      console.log(error.response.data)
+      return navigate(`/error?errorMessage=${error.response.data}&status=${error.response.status}`)}
+    }
+
+
     
-  export const googleSignIn = async (e) => window.location.href = import.meta.env.VITE_REDIRECT_URL
-
+    export const googleSignIn = async (e) => {
+      try {
+        const redirectUrl = import.meta.env.VITE_REDIRECT_URL;
+        if (!redirectUrl) {
+          throw new Error("Google Sign in is currently not available. Please try other sign-in methods.");
+        }
+        window.location.href = redirectUrl;
+      } catch (error) {
+        console.error(error);
+        throw new Error("Google Sign in is currently not available. Please try other sign-in methods.");
+      }
+    }
     

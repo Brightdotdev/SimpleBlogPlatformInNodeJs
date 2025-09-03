@@ -44,7 +44,8 @@ class Create{
                 }}
 
 
-                async createGoogleUser(user, done) {
+                async createGoogleUser(user) {
+
                     const {providerId, provider} = user
                     const ReadController = new Read(); 
                     const session = await mongoose.startSession()
@@ -53,7 +54,7 @@ class Create{
                     if(!user){
                        throw new Error("No user provided");}
 
-                    if(!providerId && provider !== "google" ){
+                    if(!providerId || provider !== "google" ){
                        throw new Error("User not valid");}
         
                     
@@ -61,7 +62,8 @@ class Create{
                     const existingUser = await ReadController.getUserByEmail(user.email)
     
                         if(existingUser){
-                            return done(null, existingUser)
+                            console.log("User already exists")
+                            return  existingUser
                         }
                     
                     const userData = new userSchema(user);
@@ -70,15 +72,15 @@ class Create{
                         await session.commitTransaction();
                         session.endSession();
                        
-                    return done(null, savedUser);
+                    console.log("User saved")
+                    return savedUser
                     } catch (error) {  
-    
+
                         await session.abortTransaction();
                         session.endSession();
-                        
-                        if (done) {
-                        done(error,null)
-                        }throw error;}}
+                        console.error("❌ Database Error:", error);
+                        throw error;
+                    }}
                     
                     
 

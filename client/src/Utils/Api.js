@@ -13,7 +13,7 @@ const Api = axios.create({
 export const AuthenticateUser =  async () => {
     try {
       console.log("we are her ooooo")
-      const response = await Api.get("/v3/user/auth/authenticator");
+      const response = await Api.get("/v3/user/auth");
       return response
     } catch (error) {
       console.error("Authentication error:", error);

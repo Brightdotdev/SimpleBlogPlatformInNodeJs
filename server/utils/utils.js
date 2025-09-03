@@ -129,6 +129,14 @@ const generateUserData = (profile) =>{
     email : profile.emails[0].value}}
 
 
+
+const debounceFunction = (func, delay) => {
+  let timer;
+  return function (...args) {
+      clearTimeout(timer);
+      timer = setTimeout(() => func.apply(this, args), delay);
+  };
+  }
     
   module.exports = {
   getUserInput,generateUserData,
@@ -136,6 +144,6 @@ const generateUserData = (profile) =>{
     connectToDatabase,urlValidator,
     generateUsername,generateComments,
     generateRandomUsers,
-
+    debounceFunction,
     comparePassword,hashPassword
   }

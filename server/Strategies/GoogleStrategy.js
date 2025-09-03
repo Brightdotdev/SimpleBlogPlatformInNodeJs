@@ -35,17 +35,20 @@ passport.use(new GoogleStrategy({
     clientSecret : process.env.GOOGLE_CLIENT_SECRET ,
     callbackURL : process.env.SUCCESS_CALLBACK_URL
 
-},async (profile,done) =>{
+},async (accessToken, refreshToken, profile, done) =>{
     const CreateController = new CreateClass()  
 
     try {
         
-        const userData =  require("../utils/utils").generateUserData(profile)
-        console.log(userData)
 
-        const userProfile =  await CreateController.createGoogleUser(userData,done)  
-        return userProfile
+          if (!profile.emails || !profile.emails.length) {
+            throw new Error("No email found in Google profile!");
+        }
 
+        const userData = require("../utils/utils").generateUserData(profile);
+        const userProfile = await CreateController.createGoogleUser(userData);
+        console.log(userProfile)
+        return done(null, userProfile);
         } catch (error) {
         console.log(error)
         return done(error,null)}}))

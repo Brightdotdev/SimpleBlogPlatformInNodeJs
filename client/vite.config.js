@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   server: {
     proxy: {
-      '/user': {
+      '/api/v3/': {
         target: 'http://localhost:3232',
         changeOrigin: true,
         secure: false,

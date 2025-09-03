@@ -27,13 +27,13 @@ userValidationRouter.post("/googleUser/finalSetUp" ,checkSchema(PassportJsValida
 
 
 
-userValidationRouter.get("/authenticator" ,isUserAuthenticated)
+userValidationRouter.get("/" ,isUserAuthenticated)
 
 
 
 userValidationRouter.get("/signUp/auth/failure", (req,res) =>{
    console.log("How did you even get here")
-    return  res.redirect(`${process.env.CLIENT_URL}/auth/fail`)})
+    return  res.redirect(`${process.env.CLIENT_URL}/error?errorMessage=authFailure`)})
 
 
 
